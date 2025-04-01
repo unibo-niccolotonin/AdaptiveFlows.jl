@@ -193,13 +193,13 @@ Apply the flow block `flow` to the input `x`, and compute the logarithm of the a
 Returns a tuple with the transformed output in the first component and a row matrix of the corresponding log values of the abs of 
 the jacobians in the second component.
 """
-function apply_rqs_coupling_flow(flow::Union{RQSplineCouplingBlock, InverseRQSplineCouplingBlock}, x::AbstractArray)
+function apply_rqs_coupling_flow(flow::Union{RQSplineCouplingBlock, InverseRQSplineCouplingBlock}, x::AbstractArray, B::Real=10.0)
 
     rq_spline = flow isa RQSplineCouplingBlock ? RQSpline : InvRQSpline
     n_dims_to_transform = sum(flow.mask)
 
     input_mask = .~flow.mask 
-    y, ladj = with_logabsdet_jacobian(rq_spline(MonotonicSplines.rqs_params_from_nn(flow.nn(x[input_mask,:], flow.nn_parameters, flow.nn_state)[1], n_dims_to_transform)...), x[flow.mask,:])   
+    y, ladj = with_logabsdet_jacobian(rq_spline(MonotonicSplines.rqs_params_from_nn(flow.nn(x[input_mask,:], flow.nn_parameters, flow.nn_state)[1], n_dims_to_transform, B)...), x[flow.mask,:])   
 
     return MonotonicSplines._sort_dimensions(y, x, flow.mask), ladj
 end
