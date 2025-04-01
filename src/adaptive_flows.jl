@@ -41,7 +41,7 @@ function CompositeFlow(modules::Vector{F}) where F <: Function
 end    
 
 function CompositeFlow(n_dims::Integer, modules::Vector{F}) where F <: Function
-    build_flow(ndims, modules)
+    build_flow(n_dims, modules)
 end    
 
 
